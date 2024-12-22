@@ -8,6 +8,8 @@
 import WidgetKit
 import SwiftUI
 
+import NetworkModule
+
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), emoji: "😀")
@@ -40,16 +42,87 @@ struct SimpleEntry: TimelineEntry {
 }
 
 struct TargetWidgetEntryView : View {
+    @Environment(\.widgetFamily) var widgetFamily
     var entry: Provider.Entry
 
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
-
-            Text("Emoji:")
-            Text(entry.emoji)
+        switch widgetFamily {
+        case .systemSmall:
+            viewss
+        case .systemMedium:
+            viewss
+        case .systemLarge:
+            viewss
+        case .systemExtraLarge:
+            viewss
+        case .accessoryCorner:
+            viewss
+        case .accessoryCircular:
+            viewss
+        case .accessoryRectangular:
+            viewss
+        case .accessoryInline:
+            viewss
         }
+//        GeometryReader { geo in
+//            HStack {
+//                VStack {
+//                    Text("\(entry.date.day)")
+//                        .font(.title)
+//                    Text("\(getWeekdayString(entry.date.weekday))")
+//                }
+//                .frame(width: geo.size.width * 0.15)
+//                .background(Color.yellow.opacity(0.4))
+//                
+//                VStack(alignment: .leading) {
+//                    //            Text("Time:")
+//                    //            Text(entry.date, style: .time)
+//                    //
+//                    //            Text("Emoji:")
+//                    //            Text(entry.emoji)
+//                    
+//                    
+//                    Text("오늘의 소확행 🍀")
+//                        .bold()
+//                    
+//                    Text("평소에 좋아하던 책 꺼내 읽기")
+//                }
+//            }
+//        }
+    }
+    
+    var viewss: some View {
+        HStack {
+            Spacer()
+            VStack {
+                Spacer()
+                Text(getString())
+                    .foregroundStyle(Color.white)
+                Spacer()
+            }
+            Spacer()
+        }
+        .background(Color.black)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+    
+    func getString() -> String {
+        return TestNetworkss().dummy
+    }
+    
+    func getWeekdayString(_ weekday: Int) -> String {
+        let weekdays = ["일", "월", "화", "수", "목", "금", "토"]
+        return weekdays[weekday - 1]
+    }
+}
+
+extension Date {
+    var day: Int {
+        return Calendar.current.component(.day, from: self)
+    }
+    
+    var weekday: Int {
+        return Calendar.current.component(.weekday, from: self)
     }
 }
 
@@ -67,14 +140,13 @@ struct TargetWidget: Widget {
                     .background()
             }
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("오늘의 소확행 🍀")
+        .description("오늘의 소확행 선물을 미리 받아볼 수 있어요!")
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview(as: .systemMedium) {
     TargetWidget()
 } timeline: {
     SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
 }
